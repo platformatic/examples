@@ -1,0 +1,26 @@
+{
+  "$schema": "https://platformatic.dev/schemas/v0.21.1/db",
+  "server": {
+    "hostname": "{PLT_SERVER_HOSTNAME}",
+    "port": "{PORT}",
+    "logger": {
+      "level": "{PLT_SERVER_LOGGER_LEVEL}"
+    }
+  },
+  "db": {
+    "connectionString": "{DATABASE_URL}",
+    "graphql": true,
+    "openapi": true
+  },
+  "migrations": {
+    "dir": "migrations"
+  },
+  "plugins": {
+    "paths": [
+      "plugin.js"
+    ]
+  },
+  "types": {
+    "autogenerate": true
+  }
+}

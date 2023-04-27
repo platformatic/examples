@@ -1,0 +1,7 @@
+
+  
+  interface EntityTypes  {
+    
+  }
+  
+  export { EntityTypes , }

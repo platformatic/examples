@@ -1,0 +1,36 @@
+name: Cleanup Neon branch database
+
+on:
+  pull_request:
+    types: closed
+
+jobs:
+  delete-branch-database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find Neon branch database by name
+        id: get-branch-id
+        run: |
+          branch_id=$(\
+            curl --silent \
+              "https://console.neon.tech/api/v2/projects/${PROJECT_ID}/branches" \
+              --header "Accept: application/json" \
+              --header "Content-Type: application/json" \
+              --header "Authorization: Bearer ${API_KEY}" \
+                | jq -r .branches \
+                  | jq -c '.[] | select(.name | contains("'${BRANCH_NAME}'")) .id' \
+                    | jq -r \
+          )
+
+          echo "branch_id=${branch_id}" >> $GITHUB_OUTPUT
+        env:
+          PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+          API_KEY: ${{ secrets.NEON_API_KEY }}
+          BRANCH_NAME: ${{ github.head_ref }}
+
+      - name: Delete Neon branch database
+        uses: neondatabase/delete-branch-action@v2
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_id: ${{ steps.get-branch-id.outputs.branch_id }}
+          api_key: ${{ secrets.NEON_API_KEY }}

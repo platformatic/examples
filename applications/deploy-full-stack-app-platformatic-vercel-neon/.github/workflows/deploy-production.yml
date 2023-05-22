@@ -1,0 +1,45 @@
+name: Deploy production blog app
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+
+jobs:
+  build-and-deploy-api:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      platformatic_app_url: ${{ steps.deploy-production-app.outputs.platformatic_app_url }}
+    defaults:
+      run:
+        working-directory: blog-api
+    steps:
+      - name: Checkout application project repository
+        uses: actions/checkout@v3
+
+      - name: Install Platformatic app dependencies
+        run: npm install --omit=dev
+
+      - name: Deploy production app to Platformatic Cloud
+        id: deploy-production-app
+        uses: platformatic/onestep@latest
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          platformatic_workspace_id: ${{ vars.PLATFORMATIC_STATIC_WORKSPACE_ID }}
+          platformatic_workspace_key: ${{ secrets.PLATFORMATIC_STATIC_WORKSPACE_API_KEY }}
+          platformatic_config_path: ./blog-api/platformatic.db.json
+          secrets: DATABASE_URL
+        env:
+          PLT_SERVER_HOSTNAME: ${{ vars.PLT_SERVER_HOSTNAME }}
+          PORT: ${{ vars.PLT_SERVER_PORT }}
+          PLT_SERVER_LOGGER_LEVEL: ${{ vars.PLT_SERVER_LOGGER_LEVEL }}
+          PLT_MIGRATIONS_DB_TYPE: ${{ vars.PLT_MIGRATIONS_DB_TYPE }}
+          PLT_SERVER_CORS_ORIGIN: ${{ vars.PLT_SERVER_CORS_ORIGIN }}
+          PLT_AUTHORIZATION_JWT_NAMESPACE: ${{ vars.PLT_AUTHORIZATION_JWT_NAMESPACE }}
+          PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS: ${{ vars.PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS }}
+          DATABASE_URL: ${{ secrets.NEON_DB_URL_PRODUCTION }}

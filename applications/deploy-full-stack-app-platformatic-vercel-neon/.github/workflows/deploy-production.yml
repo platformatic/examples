@@ -1,0 +1,76 @@
+name: Deploy production blog app
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+
+jobs:
+  build-and-deploy-api:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      platformatic_app_url: ${{ steps.deploy-production-app.outputs.platformatic_app_url }}
+    defaults:
+      run:
+        working-directory: blog-api
+    steps:
+      - name: Checkout application project repository
+        uses: actions/checkout@v3
+
+      - name: Install Platformatic app dependencies
+        run: npm install --omit=dev
+
+      - name: Deploy production app to Platformatic Cloud
+        id: deploy-production-app
+        uses: platformatic/onestep@latest
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          platformatic_workspace_id: ${{ vars.PLATFORMATIC_STATIC_WORKSPACE_ID }}
+          platformatic_workspace_key: ${{ secrets.PLATFORMATIC_STATIC_WORKSPACE_API_KEY }}
+          platformatic_config_path: ./blog-api/platformatic.db.json
+          secrets: DATABASE_URL
+        env:
+          PLT_SERVER_HOSTNAME: ${{ vars.PLT_SERVER_HOSTNAME }}
+          PORT: ${{ vars.PLT_SERVER_PORT }}
+          PLT_SERVER_LOGGER_LEVEL: ${{ vars.PLT_SERVER_LOGGER_LEVEL }}
+          PLT_MIGRATIONS_DB_TYPE: ${{ vars.PLT_MIGRATIONS_DB_TYPE }}
+          PLT_SERVER_CORS_ORIGIN: ${{ vars.PLT_SERVER_CORS_ORIGIN }}
+          PLT_AUTHORIZATION_JWT_NAMESPACE: ${{ vars.PLT_AUTHORIZATION_JWT_NAMESPACE }}
+          PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS: ${{ vars.PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS }}
+          DATABASE_URL: ${{ secrets.NEON_DB_URL_PRODUCTION }}
+
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy-api
+    defaults:
+      run:
+        working-directory: blog-frontend
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout application project repository
+        uses: actions/checkout@v3
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@canary
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build front end artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          NEXT_PUBLIC_BLOG_API_ORIGIN: ${{ needs.build-and-deploy-api.outputs.platformatic_app_url }}
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ vars.AUTH0_BLOG_PRODUCTION_APP_CLIENT_ID }}
+          NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ vars.AUTH0_AUDIENCE }}
+          NEXT_PUBLIC_AUTH0_SCOPE: ${{ vars.AUTH0_SCOPE }}
+
+      - name: Deploy production front end to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

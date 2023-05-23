@@ -1,0 +1,71 @@
+{
+  "$schema": "https://platformatic.dev/schemas/v0.20.1/db",
+  "server": {
+    "hostname": "{PLT_SERVER_HOSTNAME}",
+    "port": "{PORT}",
+    "logger": {
+      "level": "{PLT_SERVER_LOGGER_LEVEL}"
+    },
+    "cors": {
+      "origin": {
+        "regexp": "{PLT_SERVER_CORS_ORIGIN}"
+      }
+    }
+  },
+  "db": {
+    "connectionString": "{DATABASE_URL}",
+    "graphql": true,
+    "openapi": true
+  },
+  "migrations": {
+    "dir": "migrations/{PLT_MIGRATIONS_DB_TYPE}"
+  },
+  "plugins": {
+    "paths": [
+      "plugin.js"
+    ]
+  },
+  "types": {
+    "autogenerate": true
+  },
+  "authorization": {
+    "jwt": {
+      "namespace": "{PLT_AUTHORIZATION_JWT_NAMESPACE}",
+      "jwks": {
+        "allowedDomains": ["{PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS}"]
+      }
+    },
+    "rules": [
+      {
+        "role": "anonymous",
+        "entity": "post",
+        "find": true,
+        "save": false,
+        "delete": false
+      },
+      {
+        "role": "author",
+        "entity": "post",
+        "find": true,
+        "save": {
+          "checks": {
+            "authorUserId": {
+              "eq": "X-PLATFORMATIC-USER-ID"
+            }
+          }
+        },
+        "delete": {
+          "checks": {
+            "authorUserId": {
+              "eq": "X-PLATFORMATIC-USER-ID"
+            }
+          }
+        },
+        "defaults": {
+          "authorUserId": "X-PLATFORMATIC-USER-ID",
+          "authorName": "X-PLATFORMATIC-USER-NAME"
+        }
+      }
+    ]
+  }
+}

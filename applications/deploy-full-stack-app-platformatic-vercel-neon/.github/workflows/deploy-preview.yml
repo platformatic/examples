@@ -1,0 +1,143 @@
+# .github/workflows/deploy-preview.yml
+
+name: Deploy preview blog app
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+
+jobs:
+  build-and-deploy-api:
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    outputs:
+      platformatic_app_url: ${{ steps.deploy-preview-app.outputs.platformatic_app_url }}
+      neon_branch_url: https://console.neon.tech/app/projects/${{ vars.NEON_PROJECT_ID }}/branches/${{ steps.create-branch-db.outputs.branch_id }}
+    defaults:
+      run:
+        working-directory: blog-api
+    steps:
+      - name: Checkout application project repository
+        uses: actions/checkout@v3
+
+      - name: Delete any existing Neon database for this branch
+        uses: neondatabase/delete-branch-by-name-action@main
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: ${{ github.head_ref }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - name: Wait for any existing Neon branch database to be deleted
+        run: sleep 10
+
+      - name: Create Neon branch database
+        id: create-branch-db
+        uses: neondatabase/create-branch-action@v3
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: ${{ github.head_ref }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          username: ${{ secrets.NEON_DB_USER }}
+          password: ${{ secrets.NEON_DB_PASSWORD }}
+
+      - name: Install Platformatic app dependencies
+        run: npm install --omit=dev
+
+      - name: Deploy preview app to Platformatic Cloud
+        id: deploy-preview-app
+        uses: platformatic/onestep@latest
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          platformatic_workspace_id: ${{ vars.PLATFORMATIC_DYNAMIC_WORKSPACE_ID }}
+          platformatic_workspace_key: ${{ secrets.PLATFORMATIC_DYNAMIC_WORKSPACE_API_KEY }}
+          platformatic_config_path: ./blog-api/platformatic.db.json
+          post_pr_comment: false
+          secrets: DATABASE_URL
+        env:
+          PLT_SERVER_HOSTNAME: ${{ vars.PLT_SERVER_HOSTNAME }}
+          PORT: ${{ vars.PLT_SERVER_PORT }}
+          PLT_SERVER_LOGGER_LEVEL: ${{ vars.PLT_SERVER_LOGGER_LEVEL }}
+          PLT_MIGRATIONS_DB_TYPE: ${{ vars.PLT_MIGRATIONS_DB_TYPE }}
+          PLT_SERVER_CORS_ORIGIN: ${{ vars.PLT_SERVER_CORS_ORIGIN }}
+          PLT_AUTHORIZATION_JWT_NAMESPACE: ${{ vars.PLT_AUTHORIZATION_JWT_NAMESPACE }}
+          PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS: ${{ vars.PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS }}
+          DATABASE_URL: ${{ steps.create-branch-db.outputs.db_url }}/neondb
+
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    outputs:
+      vercel_app_url: ${{ steps.deploy-preview-frontend.outputs.vercel_app_url }}
+    needs: build-and-deploy-api
+    defaults:
+      run:
+        working-directory: blog-frontend
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout application project repository
+        uses: actions/checkout@v3
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@canary
+
+      - name: Pull Vercel environment information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build front end artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          NEXT_PUBLIC_BLOG_API_ORIGIN: ${{ needs.build-and-deploy-api.outputs.platformatic_app_url }}
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ vars.AUTH0_BLOG_PREVIEW_APPS_CLIENT_ID }}
+          NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ vars.AUTH0_AUDIENCE }}
+          NEXT_PUBLIC_AUTH0_SCOPE: ${{ vars.AUTH0_SCOPE }}
+
+      - name: Deploy preview front end to Vercel
+        id: deploy-preview-frontend
+        run: |
+          vercel_app_url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "vercel_app_url=${vercel_app_url}" >> $GITHUB_OUTPUT
+          echo "Deployed preview app to Vercel: ${vercel_app_url}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Update Application URIs for Auth0 Blog previews application
+        working-directory: .github/workflows/helpers
+        run: |
+          npm install --silent
+          node set-auth0-application-uris.mjs \
+            --url ${{ steps.deploy-preview-frontend.outputs.vercel_app_url }} \
+            --auth0-domain '${{ vars.AUTH0_DOMAIN }}' \
+            --auth0-gha-client-id '${{ vars.AUTH0_BLOG_GHA_CLIENT_ID }}' \
+            --auth0-gha-client-secret '${{ secrets.AUTH0_BLOG_GHA_CLIENT_SECRET }}' \
+            --auth0-preview-apps-client-id '${{ vars.AUTH0_BLOG_PREVIEW_APPS_CLIENT_ID }}'
+
+  comment-on-pr:
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [build-and-deploy-api, build-and-deploy-frontend]
+    steps:
+      - name: Comment on pull request with preview URLs
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ### :writing_hand: Blog front end preview app
+            ${{ needs.build-and-deploy-frontend.outputs.vercel_app_url }} (Vercel)
+
+            ### :cloud: Blog API preview app
+            ${{ needs.build-and-deploy-api.outputs.platformatic_app_url }} (Platformatic Cloud)
+
+            ### :elephant: Blog branch database
+            ${{ needs.build-and-deploy-api.outputs.neon_branch_url }} (Neon)
+          comment_tag: preview-app-urls
+          mode: upsert

@@ -67,17 +67,73 @@ jobs:
           PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS: ${{ vars.PLT_AUTHORIZATION_JWT_JWKS_ALLOWED_DOMAINS }}
           DATABASE_URL: ${{ steps.create-branch-db.outputs.db_url }}/neondb
 
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    outputs:
+      vercel_app_url: ${{ steps.deploy-preview-frontend.outputs.vercel_app_url }}
+    needs: build-and-deploy-api
+    defaults:
+      run:
+        working-directory: blog-frontend
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout application project repository
+        uses: actions/checkout@v3
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@canary
+
+      - name: Pull Vercel environment information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build front end artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          NEXT_PUBLIC_BLOG_API_ORIGIN: ${{ needs.build-and-deploy-api.outputs.platformatic_app_url }}
+          NEXT_PUBLIC_AUTH0_DOMAIN: ${{ vars.AUTH0_DOMAIN }}
+          NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ vars.AUTH0_BLOG_PREVIEW_APPS_CLIENT_ID }}
+          NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ vars.AUTH0_AUDIENCE }}
+          NEXT_PUBLIC_AUTH0_SCOPE: ${{ vars.AUTH0_SCOPE }}
+
+      - name: Deploy preview front end to Vercel
+        id: deploy-preview-frontend
+        run: |
+          vercel_app_url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "vercel_app_url=${vercel_app_url}" >> $GITHUB_OUTPUT
+          echo "Deployed preview app to Vercel: ${vercel_app_url}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Update Application URIs for Auth0 Blog previews application
+        working-directory: .github/workflows/helpers
+        run: |
+          npm install --silent
+          node set-auth0-application-uris.mjs \
+            --url ${{ steps.deploy-preview-frontend.outputs.vercel_app_url }} \
+            --auth0-domain '${{ vars.AUTH0_DOMAIN }}' \
+            --auth0-gha-client-id '${{ vars.AUTH0_BLOG_GHA_CLIENT_ID }}' \
+            --auth0-gha-client-secret '${{ secrets.AUTH0_BLOG_GHA_CLIENT_SECRET }}' \
+            --auth0-preview-apps-client-id '${{ vars.AUTH0_BLOG_PREVIEW_APPS_CLIENT_ID }}'
+
   comment-on-pr:
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: build-and-deploy-api
+    needs: [build-and-deploy-api, build-and-deploy-frontend]
     steps:
       - name: Comment on pull request with preview URLs
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
+            ### :writing_hand: Blog front end preview app
+            ${{ needs.build-and-deploy-frontend.outputs.vercel_app_url }} (Vercel)
+
             ### :cloud: Blog API preview app
             ${{ needs.build-and-deploy-api.outputs.platformatic_app_url }} (Platformatic Cloud)
 

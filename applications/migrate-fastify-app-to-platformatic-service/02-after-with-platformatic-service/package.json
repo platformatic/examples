@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "platformatic service start",
+    "test": "node --no-warnings --test --test-reporter=spec test/*.test.js"
+  },
+  "devDependencies": {
+    "fastify": "^4.17.0"
+  },
+  "dependencies": {
+    "platformatic": "^0.24.0"
+  },
+  "engines": {
+    "node": "^18.8.0 || >=19"
+  }
+}

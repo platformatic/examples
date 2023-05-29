@@ -1,0 +1,16 @@
+{
+  "name": "01-before-with-fastify",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --watch server.js",
+    "test": "node --test --test-reporter=spec test/*.test.js"
+  },
+  "keywords": [],
+  "author": "Simon Plenderleith <simon@simonplend.co.uk> (https://simonplend.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^4.17.0",
+    "fastify-plugin": "^4.5.0"
+  }
+}

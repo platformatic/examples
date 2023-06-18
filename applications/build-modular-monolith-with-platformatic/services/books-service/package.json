@@ -1,0 +1,11 @@
+{
+  "name": "books-service",
+  "scripts": {
+    "start": "platformatic start",
+    "migrate": "platformatic db migrations apply",
+    "seed": "platformatic db seed seed.js"
+  },
+  "engines": {
+    "node": "^18.8.0 || >=19"
+  }
+}

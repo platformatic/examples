@@ -1,0 +1,9 @@
+{
+  "name": "media-service",
+  "scripts": {
+    "start": "platformatic start"
+  },
+  "engines": {
+    "node": "^18.8.0 || >=19"
+  }
+}

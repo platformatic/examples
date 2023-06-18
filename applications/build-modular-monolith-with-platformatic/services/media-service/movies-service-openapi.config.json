@@ -1,0 +1,14 @@
+{
+  "paths": {
+    "/movies/": {
+      "post": { "ignore": true },
+      "put": { "ignore": true },
+      "delete": { "ignore": true }
+    },
+    "/movies/{id}": {
+      "post": { "ignore": true },
+      "put": { "ignore": true },
+      "delete": { "ignore": true }
+    }
+  }
+}

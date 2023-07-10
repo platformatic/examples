@@ -1,0 +1,4 @@
+{
+  "name": "people",
+  "types": "./people.d.ts"
+}

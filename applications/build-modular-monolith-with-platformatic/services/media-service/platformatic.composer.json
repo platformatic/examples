@@ -1,0 +1,43 @@
+{
+  "$schema": "https://platformatic.dev/schemas/v0.28.1/composer",
+  "server": {
+    "hostname": "{PLT_SERVER_HOSTNAME}",
+    "port": "{PORT}",
+    "logger": {
+      "level": "{PLT_SERVER_LOGGER_LEVEL}"
+    }
+  },
+  "composer": {
+    "services": [
+      {
+        "id": "books-service",
+        "openapi": {
+          "url": "/documentation/json",
+          "config": "books-service-openapi.config.json"
+        }
+      },
+      {
+        "id": "movies-service",
+        "openapi": {
+          "url": "/documentation/json",
+          "config": "movies-service-openapi.config.json"
+        }
+      }
+    ],
+    "refreshTimeout": 1000
+  },
+  "watch": true,
+  "clients": [
+    {
+      "schema": "clients/people/people.openapi.json",
+      "name": "people",
+      "type": "openapi",
+      "serviceId": "people-service"
+    }
+  ],
+  "plugins": {
+    "paths": [
+      "./plugin.js"
+    ]
+  }
+}

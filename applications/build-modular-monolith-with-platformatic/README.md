@@ -19,13 +19,19 @@ This is a monorepo which is configured to work with with [pnpm](https://pnpm.io/
 pnpm install
 ```
 
-2. Apply migration to all service databases:
+2. Create `.env` files for each service:
+
+```bash
+pnpm run -r configure
+```
+
+3. Apply migrations for all service databases:
 
 ```bash
 pnpm run -r migrate
 ```
 
-2. Seed all service databases:
+4. Seed all service databases:
 
 ```bash
 pnpm run -r seed

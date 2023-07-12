@@ -4,6 +4,10 @@
 
 This is a generated [Platformatic Runtime](https://oss.platformatic.dev/docs/reference/runtime/introduction) application.
 
+## Architecture
+
+<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1688954748161/869120f8-6a35-49f3-865d-4b0ada2b1618.png?auto=format&format=webp"><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1688954748161/869120f8-6a35-49f3-865d-4b0ada2b1618.png?auto=format&format=webp"></a>
+
 ## Requirements
 
 Platformatic supports macOS, Linux and Windows ([WSL](https://docs.microsoft.com/windows/wsl/) recommended).

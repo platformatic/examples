@@ -1,6 +1,6 @@
 # Platformatic Examples ⚡️
 
-This is a curated collection of examples that will help you learn how to build applications with [Platformatic open-source tools](https://oss.platformatic.dev/). They're grouped into the following categories:
+This is a curated collection of examples that will help you learn how to build applications with [Platformatic open-source tools](https://docs.platformatic.dev/). They're grouped into the following categories:
 
 - [How-tos](#how-tos)
 - [Applications](#applications)
@@ -56,7 +56,7 @@ Blog app with GitHub Actions workflows for automated preview and production depl
 
 *Uses: Platformatic DB, Astro, urql*
 
-This is the application code for the [Movie Quotes App Tutorial](https://oss.platformatic.dev/docs/getting-started/movie-quotes-app-tutorial/).
+This is the application code for the [Movie Quotes App Tutorial](https://docs.platformatic.dev/docs/getting-started/movie-quotes-app-tutorial/).
 
 ### [tasks-api-platformatic-db](./applications/tasks-api-platformatic-db)
 
@@ -92,7 +92,7 @@ Tiny Queue System that will call your service back after a given time.
 
 ## 🧑‍💻 Tutorials
 
-### [Movie Quotes App tutorial](https://oss.platformatic.dev/docs/getting-started/movie-quotes-app-tutorial)
+### [Movie Quotes App tutorial](https://docs.platformatic.dev/docs/getting-started/movie-quotes-app-tutorial)
 
 *Uses: Platformatic DB, Astro, urql*
 
@@ -152,7 +152,7 @@ Tiny Queue System that will call your service back after a given time.
 
 ## 🗺️ Guides
 
-### [OSS Guides](https://oss.platformatic.dev/docs/category/guides)
+### [OSS Guides](https://docs.platformatic.dev/docs/category/guides)
 
 A collection of guides for working with Platformatic open-source tools.
 
@@ -170,7 +170,7 @@ A collection of guides for working with Platformatic open-source tools.
 
 *Uses: Fastify, Platformatic Service*
 
-> [Platformatic Service](https://oss.platformatic.dev/docs/reference/service/introduction) is the natural evolution of the build-it-from-scratch Fastify development experience. It provides a solid foundation for building Node.js applications on top of Fastify, with best practices baked in.
+> [Platformatic Service](https://docs.platformatic.dev/docs/reference/service/introduction) is the natural evolution of the build-it-from-scratch Fastify development experience. It provides a solid foundation for building Node.js applications on top of Fastify, with best practices baked in.
 >
 > The good news is that the path to migrate a Fastify application to use Platformatic Service is fairly straightforward. This guide covers some of the things you'll need to know when migrating an application, as well as tips on different migration approaches.
 

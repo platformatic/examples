@@ -2,7 +2,7 @@
 
 > **This example application was created for the tutorial '[Build and deploy a modular monolith with Platformatic](https://blog.platformatic.dev/build-and-deploy-a-modular-monolith-with-platformatic)'.**
 
-This is a generated [Platformatic Runtime](https://oss.platformatic.dev/docs/reference/runtime/introduction) application.
+This is a generated [Platformatic Runtime](https://docs.platformatic.dev/docs/reference/runtime/introduction) application.
 
 ## Architecture
 

@@ -4,9 +4,9 @@
  */
 declare interface User {
     id?: number;
-    username: string;
-    displayName: string;
     createdAt?: string | null;
+    displayName: string;
     updatedAt?: string | null;
+    username: string;
 }
 export { User };

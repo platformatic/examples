@@ -4,10 +4,10 @@
  */
 declare interface Task {
     id?: number;
+    createdAt?: string | null;
     description: string;
     priority: number;
-    userId: number;
-    createdAt?: string | null;
     updatedAt?: string | null;
+    userId: number;
 }
 export { Task };

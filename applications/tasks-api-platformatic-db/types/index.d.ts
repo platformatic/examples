@@ -1,9 +1,9 @@
-import { User } from './User'
 import { Task } from './Task'
+import { User } from './User'
   
   interface EntityTypes  {
-    User:User
     Task:Task
+    User:User
   }
   
-  export { EntityTypes ,User,Task }
+  export { EntityTypes ,Task,User }

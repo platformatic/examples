@@ -1,4 +1,4 @@
-/// <reference types="@platformatic/db" />
+import type { PlatformaticApp, PlatformaticDBMixin, PlatformaticDBConfig, Entity, Entities, EntityHooks } from '@platformatic/db'
 import { EntityTypes, Book } from './types'
 
 declare module 'fastify' {
@@ -16,8 +16,18 @@ declare module 'fastify' {
   }
 }
 
-declare module '@platformatic/sql-mapper' {
-  interface Entities {
-    book: Entity<Book>,
+interface AppEntities extends Entities {
+  book: Entity<Book>,
+}
+
+interface AppEntityHooks {
+  addEntityHooks(entityName: 'book', hooks: EntityHooks<Book>): any
+}
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    platformatic: PlatformaticApp<PlatformaticDBConfig> &
+      PlatformaticDBMixin<AppEntities> &
+      AppEntityHooks
   }
 }

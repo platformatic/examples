@@ -1,7 +1,7 @@
 import { Person } from './Person'
   
-  interface EntityTypes  {
-    Person:Person
-  }
+interface EntityTypes  {
+  Person: Person
+}
   
-  export { EntityTypes ,Person }
+export { EntityTypes, Person }

@@ -5,6 +5,6 @@
     "configure": "cp .env.sample .env"
   },
   "engines": {
-    "node": "^18.8.0 || >=19"
+    "node": "^18.8.0 || >=20.6"
   }
 }

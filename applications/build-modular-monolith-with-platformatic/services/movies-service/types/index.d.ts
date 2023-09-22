@@ -1,7 +1,7 @@
 import { Movie } from './Movie'
   
-  interface EntityTypes  {
-    Movie:Movie
-  }
+interface EntityTypes  {
+  Movie: Movie
+}
   
-  export { EntityTypes ,Movie }
+export { EntityTypes, Movie }

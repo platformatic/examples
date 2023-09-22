@@ -4,10 +4,10 @@
  */
 declare interface Book {
     id?: number;
-    title: string;
     authorId: number;
-    publishedYear: number;
     createdAt?: string | null;
+    publishedYear: number;
+    title: string;
     updatedAt?: string | null;
 }
 export { Book };

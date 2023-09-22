@@ -1,0 +1,5 @@
+{
+  "name": "people",
+  "types": "./people.d.ts",
+  "main": "./people.cjs"
+}

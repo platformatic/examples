@@ -6,10 +6,10 @@
     "fastify": "^4.18.0"
   },
   "dependencies": {
-    "@platformatic/client": "^0.29.0",
-    "platformatic": "^0.29.0"
+    "@platformatic/client": "^0.46.0",
+    "platformatic": "^0.46.0"
   },
   "engines": {
-    "node": "^18.8.0 || >=19"
+    "node": "^18.8.0 || >=20.6"
   }
 }

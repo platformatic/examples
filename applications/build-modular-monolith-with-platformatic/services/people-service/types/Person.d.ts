@@ -4,8 +4,8 @@
  */
 declare interface Person {
     id?: number;
-    name: string;
     createdAt?: string | null;
+    name: string;
     updatedAt?: string | null;
 }
 export { Person };

@@ -4,11 +4,11 @@
  */
 declare interface Movie {
     id?: number;
-    title: string;
+    createdAt?: string | null;
     directorId: number;
     producerId: number;
     releasedYear: number;
-    createdAt?: string | null;
+    title: string;
     updatedAt?: string | null;
 }
 export { Movie };

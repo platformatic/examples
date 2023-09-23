@@ -41,6 +41,7 @@ module.exports = async function peopleDataPlugin (app) {
     const responseSchema = routeOptions.schema.response[200]
     const entitySchema = (responseSchema.items) ? responseSchema.items : responseSchema
     entitySchema.properties.authorName = { type: 'string' }
+    entitySchema.required = entitySchema.required || []
     entitySchema.required.push('authorName')
 
     routeOptions.config.onComposerResponse = buildOnComposerResponseCallback([
@@ -56,6 +57,7 @@ module.exports = async function peopleDataPlugin (app) {
     const entitySchema = (responseSchema.items) ? responseSchema.items : responseSchema
     entitySchema.properties.directorName = { type: 'string' }
     entitySchema.properties.producerName = { type: 'string' }
+    entitySchema.required = entitySchema.required || []
     entitySchema.required.push('directorName', 'producerName')
 
     routeOptions.config.onComposerResponse = buildOnComposerResponseCallback([

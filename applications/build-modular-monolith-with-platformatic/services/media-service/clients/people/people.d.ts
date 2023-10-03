@@ -8,6 +8,7 @@ declare namespace people {
     getPersonById(req?: GetPersonByIdRequest): Promise<GetPersonByIdResponseOK>;
     updatePerson(req?: UpdatePersonRequest): Promise<UpdatePersonResponseOK>;
     deletePeople(req?: DeletePeopleRequest): Promise<DeletePeopleResponseOK>;
+    getExample(req?: GetExampleRequest): Promise<GetExampleResponseOK>;
   }
   export interface PeopleOptions {
     url: string
@@ -202,6 +203,12 @@ declare namespace people {
     'name': string;
     'createdAt': string;
     'updatedAt': string;
+  }
+
+  export interface GetExampleRequest {
+  }
+
+  export interface GetExampleResponseOK {
   }
 
 }

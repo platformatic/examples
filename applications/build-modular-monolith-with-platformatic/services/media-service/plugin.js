@@ -20,14 +20,14 @@ module.exports = async function peopleDataPlugin (app) {
         }
       }
 
-      const people = await app.people.getPeople({ "where.id.in": peopleIds.join(',') })
+      const people = await request.people.getPeople({ 'where.id.in': peopleIds.join(',') })
 
       const getPersonNameById = (id) => {
         const person = people.find(person => person.id === id)
         return (person) ? person.name : null
       }
 
-      for (let entity of entities) {
+      for (const entity of entities) {
         for (const { idProp, nameProp } of peopleProps) {
           entity[nameProp] = getPersonNameById(entity[idProp])
         }
@@ -48,9 +48,9 @@ module.exports = async function peopleDataPlugin (app) {
       { idProp: 'authorId', nameProp: 'authorName' }
     ])
   }
-
-  app.platformatic.addComposerOnRouteHook('/books/', ['GET'], booksOnRouteHook)
-  app.platformatic.addComposerOnRouteHook('/books/{id}', ['GET'], booksOnRouteHook)
+  
+  app.platformatic.addComposerOnRouteHook('/books-service/books/', ['GET'], booksOnRouteHook)
+  app.platformatic.addComposerOnRouteHook('/books-service/books/{id}', ['GET'], booksOnRouteHook)
 
   function moviesOnRouteHook (routeOptions) {
     const responseSchema = routeOptions.schema.response[200]
@@ -66,6 +66,6 @@ module.exports = async function peopleDataPlugin (app) {
     ])
   }
 
-  app.platformatic.addComposerOnRouteHook('/movies/', ['GET'], moviesOnRouteHook)
-  app.platformatic.addComposerOnRouteHook('/movies/{id}', ['GET'], moviesOnRouteHook)
+  app.platformatic.addComposerOnRouteHook('/movies-service/movies/', ['GET'], moviesOnRouteHook)
+  app.platformatic.addComposerOnRouteHook('/movies-service/movies/{id}', ['GET'], moviesOnRouteHook)
 }

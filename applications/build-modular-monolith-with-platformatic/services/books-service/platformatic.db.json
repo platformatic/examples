@@ -1,16 +1,10 @@
 {
-  "$schema": "https://platformatic.dev/schemas/v0.46.1/db",
-  "server": {
-    "hostname": "{PLT_SERVER_HOSTNAME}",
-    "port": "{PORT}",
-    "logger": {
-      "level": "{PLT_SERVER_LOGGER_LEVEL}"
-    }
-  },
+  "$schema": "https://platformatic.dev/schemas/v1.1.0/db",
   "db": {
-    "connectionString": "{DATABASE_URL}",
+    "connectionString": "{PLT_BOOKS_SERVICE_DATABASE_URL}",
     "graphql": true,
-    "openapi": true
+    "openapi": true,
+    "schemalock": true
   },
   "watch": {
     "ignore": [
@@ -20,8 +14,5 @@
   },
   "migrations": {
     "dir": "migrations"
-  },
-  "types": {
-    "autogenerate": true
   }
 }

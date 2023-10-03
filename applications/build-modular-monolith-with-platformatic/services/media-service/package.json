@@ -1,8 +1,7 @@
 {
   "name": "media-service",
   "scripts": {
-    "start": "platformatic start",
-    "configure": "cp .env.sample .env"
+    "start": "platformatic start"
   },
   "engines": {
     "node": "^18.8.0 || >=20.6"

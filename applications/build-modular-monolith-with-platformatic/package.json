@@ -3,13 +3,13 @@
     "start": "platformatic start"
   },
   "devDependencies": {
-    "fastify": "^4.18.0"
+    "fastify": "^4.19.2"
   },
   "dependencies": {
-    "@platformatic/client": "^0.46.0",
-    "platformatic": "^0.46.0"
+    "@platformatic/client": "^1.0.0",
+    "platformatic": "^1.1.0"
   },
   "engines": {
-    "node": "^18.8.0 || >=20.6"
+    "node": "^18.8.0 || >=20.6.0"
   }
 }

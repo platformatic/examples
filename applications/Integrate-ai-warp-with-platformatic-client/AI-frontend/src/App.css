@@ -1,0 +1,83 @@
+/* Import Google fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+body {
+    background-color: #00050B;
+    padding: 0;
+    margin: 0;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 100;
+}
+
+#container {
+    position: fixed;
+}
+
+.ai-root{
+    display: block;
+    position: absolute;
+    bottom: 15rem;
+    left: 25%;
+    border-radius: 1rem;
+    line-height: 2.5rem;
+    width: 55rem;
+}
+
+.label-container {
+    display: flex;
+    justify-content: center;
+}
+
+.label-text {
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+
+.textarea-text {
+    width: 100%;
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #1a1a1a;
+    padding-left: 1rem;
+    line-height: 2.5rem;
+    outline: none;
+}
+
+.textarea-text::placeholder {
+    color: white;
+
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.button-text {
+    background-color: #1a1a1a;
+
+}
+
+.card {
+    margin-top: 3.5rem;
+}
+
+.card-card {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 2rem;
+}
+
+.button-text:hover {
+    background-color: #646cff;
+}
+
+
+

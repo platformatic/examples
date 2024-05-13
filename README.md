@@ -92,6 +92,13 @@ Tiny Queue System that will call your service back after a given time.
 
 ## 🧑‍💻 Tutorials
 
+### [Building AI applications with Platformatic AI Warp](https://blog.platformatic.dev/building-ai-applications-with-platformatic-ai-warp)
+
+*Uses: Platformatic AI Warp, React, Platformatic frontend Client*
+
+> This tutorial will help you learn how to build an AI application  with [Platformatic AI-warp](https://marketplace.platformatic.dev/#/detail/template/f27b158e-90d8-491d-8658-df2ee050bb22), integrating it with your frontend applications using [Platformatic Frontend Client](https://docs.platformatic.dev/docs/client/frontend)
+
+
 ### [Movie Quotes App tutorial](https://docs.platformatic.dev/docs/getting-started/movie-quotes-app-tutorial)
 
 *Uses: Platformatic DB, Astro, urql*
